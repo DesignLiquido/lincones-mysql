@@ -56,9 +56,8 @@ export class ClienteMySQL {
     private async executarComandoSelecao(comando: string): Promise<any> {
         return new Promise((resolve, reject) => {
             this.instanciaBancoDeDados.query(comando, (erro, resultado) => {
-                 if (erro){
-                    console.error('Erro ao obter os dados');
-                    return reject();
+                 if (erro) {
+                    return reject('Erro ao obter os dados');
                 };
                 resolve(resultado)
             })
