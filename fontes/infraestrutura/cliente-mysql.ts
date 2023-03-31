@@ -7,25 +7,15 @@ export class ClienteMySQL {
     readonly caminhoRaiz: string;
     origemDados: any;
 
-    constructor(origemDados: any = null) {
+    constructor() {
         this.caminhoRaiz = process.cwd();
 
-        if(origemDados){
-            this.origemDados = origemDados;
-        } else {
-            //Fins de testes @Samuel
-            this.origemDados = {
-                host     : 'localhost',
-                user     : 'root',
-                password : '123456',
-                database : 'world',
-            }
+        this.origemDados = {
+            host     : process.env.HOST,
+            user     : process.env.USER,
+            password : process.env.PASSWORD,
+            database : process.env.DATABASE
         }
-        // if (origemDados !== ':memory:' && origemDados !== null) {
-        //     this.origemDados = caminho.join(this.caminhoRaiz, origemDados);
-        // } else {
-        //     this.origemDados = ':memory:';
-        // }
     }
 
     public async abrir() {

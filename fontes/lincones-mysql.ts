@@ -4,6 +4,9 @@ import { Lexador } from "./lexador";
 import { ClienteMySQL } from "./infraestrutura/cliente-mysql";
 import { RetornoComando } from "./infraestrutura";
 
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 export class LinconesMySQL {
     lexador: Lexador;
     avaliadorSintatico: AvaliadorSintatico;
