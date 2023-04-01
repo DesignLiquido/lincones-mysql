@@ -11,15 +11,15 @@ export class ClienteMySQL {
         this.caminhoRaiz = process.cwd();
 
         this.origemDados = {
-            host     : process.env.HOST,
-            user     : process.env.USER,
-            password : process.env.PASSWORD,
-            database : process.env.DATABASE
+            host     : process.env.ENDERECO,
+            user     : process.env.USUARIO,
+            password : process.env.SENHA,
+            database : process.env.NOME_BASE_DADOS
         }
     }
 
-    public async abrir() {
-        const database = await mysql.createConnection(this.origemDados);
+    public abrir() {
+        const database = mysql.createConnection(this.origemDados);
         database.connect((erro) => {
             if(erro){
                 console.error('Erro ao conectar no MySQL: ' + erro.stack);

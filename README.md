@@ -14,6 +14,19 @@ Com o Node.js instalado, execute o seguinte comando em um prompt de comando (Ter
 npm install -g @designliquido/lincones-mysql
 ```
 
+### Execução
+
+Para executar no modo console, adicione na raiz do seu projeto um arquivo `.env` com o seguinte:
+
+```
+ENDERECO='localhost'
+USUARIO='root'
+SENHA='minhasenha#123'
+NOME_BASE_DADOS='meu_banco_de_dados'
+```
+
+Utilize o comando `lincones-mysql` para iniciar.
+
 ## Observação
 
 Se você tem interesse em contribuir com o desenvolvimento do projeto, logo após fazer o clone e atualizar os pacotes com `yarn`, lembre-se de executar o seguinte comando:
