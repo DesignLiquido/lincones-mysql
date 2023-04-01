@@ -27,6 +27,8 @@ NOME_BASE_DADOS='meu_banco_de_dados'
 
 Utilize o comando `lincones-mysql` para iniciar.
 
+Pressione `Ctrl` + `c` para sair.
+
 ## Observação
 
 Se você tem interesse em contribuir com o desenvolvimento do projeto, logo após fazer o clone e atualizar os pacotes com `yarn`, lembre-se de executar o seguinte comando:
