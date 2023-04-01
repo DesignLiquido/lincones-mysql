@@ -1,8 +1,5 @@
 export class RetornoComando {
-    linhasAfetadas: number;
-    ultimoId: any;
     linhasRetornadas: any[] = [];
-    comandoExecutado: string;
     mensagemExecucao: string;
 
     constructor(resultadoExecucao: any) {
@@ -10,24 +7,17 @@ export class RetornoComando {
             return;
         }
 
-        if (resultadoExecucao.changes) {
-            this.linhasAfetadas = resultadoExecucao.changes;
-        }
-
-        if (resultadoExecucao.lastID) {
-            this.ultimoId = resultadoExecucao.lastID;
-        }
-
-        if (resultadoExecucao.stmt) {
-            const linhas = this.linhasAfetadas || 0;
-            this.comandoExecutado = resultadoExecucao.stmt;
+        if (resultadoExecucao?.linhas?.affectedRows) {
+            const linhas = resultadoExecucao?.linhas?.affectedRows || 0;
             this.mensagemExecucao = `Ok (${linhas} ${linhas > 1 ? 'linhas afetadas' : 'linha afetada'})`;
+            return;
         }
 
-        if (Array.isArray(resultadoExecucao)) {
-            const linhas = this.linhasRetornadas.length || 0
-            this.linhasRetornadas = resultadoExecucao;
+        if (Array.isArray(resultadoExecucao?.linhas)) {
+            const linhas = resultadoExecucao.linhas?.length || 0
+            this.linhasRetornadas = resultadoExecucao?.linhas;
             this.mensagemExecucao = `(${linhas} ${linhas > 1 ? 'linhas retornadas' : 'linha retornada'})`;
+            return;
         }
     }
 }

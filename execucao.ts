@@ -22,10 +22,6 @@ interfaceLeitura.on('line', (linha: string) => {
             console.log(resultado.mensagemExecucao);
         }
 
-        if (resultado.ultimoId) {
-            console.log(`ID retornado pela operação: ${resultado.ultimoId}`);
-        }
-
         return Promise.resolve();
     }).then(() => {
         interfaceLeitura.prompt();
