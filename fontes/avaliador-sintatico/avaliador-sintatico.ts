@@ -1,21 +1,15 @@
-import { Condicao } from '../../comum/fontes/construtos';
-import { Criar, Comando, Selecionar, Atualizar, Inserir, Excluir } from '../../comum/fontes/comandos';
+import { Condicao } from '../comum/fontes/construtos';
+import { Criar, Comando, Selecionar, Atualizar, Inserir, Excluir } from '../comum/fontes/comandos';
 import {
     RetornoAvaliadorSintatico,
     RetornoLexador
-} from '../../comum/fontes/interfaces/retornos';
-import tiposDeSimbolos from '../../comum/fontes/tipos-de-simbolos';
-import { AvaliadorSintaticoBase } from '../../comum/fontes/avaliador-sintatico/avaliador-sintatico-base';
-import { Coluna } from '../../comum/fontes/construtos/coluna';
+} from '../comum/fontes/interfaces/retornos';
+import tiposDeSimbolos from '../comum/fontes/tipos-de-simbolos';
+import { AvaliadorSintaticoBase } from '../comum/fontes/avaliador-sintatico/avaliador-sintatico-base';
+import { Coluna } from '../comum/fontes/construtos/coluna';
 
 export class AvaliadorSintatico extends AvaliadorSintaticoBase {
-    private avancar(): void {
-        if (!this.estaNoFinal()) {
-            this.atual++;
-        }
-    }
-
-    private comandoAtualizar(): Atualizar {
+    override comandoAtualizar(): Atualizar {
         // Essa linha nunca deve retornar erro.
         this.consumir(tiposDeSimbolos.ATUALIZAR, 'Esperado palavra reservada "ATUALIZAR".');
 
@@ -54,7 +48,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return new Atualizar(-1, nomeDaTabela.lexema, colunasAtualizacao, condicoes);
     }
 
-    private comandoCriacaoColuna(): Coluna {
+    override comandoCriacaoColuna(): Coluna {
         // Nome
         const nomeDaColuna = this.consumir(tiposDeSimbolos.IDENTIFICADOR, 
             'Esperado identificador de nome de coluna em comando de criação de tabela.');
@@ -126,7 +120,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return new Coluna(nomeDaColuna.lexema, tipoColuna, tamanhoColuna, nulo, chavePrimaria, false);
     }
 
-    private comandoCriar(): Criar {
+    override comandoCriar(): Criar {
         // Essa linha nunca deve retornar erro.
         this.consumir(tiposDeSimbolos.CRIAR, 'Esperado palavra reservada "CRIAR".');
 
@@ -137,7 +131,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         }        
     }
 
-    private comandoCriarTabela() {
+    override comandoCriarTabela() {
         // Essa linha nunca deve retornar erro.
         this.consumir(tiposDeSimbolos.TABELA, 'Esperado palavra reservada "TABELA".');
 
@@ -168,7 +162,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         );
     }
 
-    private comandoExcluir() {
+    override comandoExcluir() {
         // Essa linha nunca deve retornar erro.
         const simboloExcluir = this.consumir(tiposDeSimbolos.EXCLUIR, 'Esperado palavra reservada "EXCLUIR".');
 
@@ -182,7 +176,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return new Excluir(-1, nomeDaTabela.lexema, condicoes);
     }
 
-    private comandoInserir(): Inserir {
+    override comandoInserir(): Inserir {
         // Essa linha nunca deve retornar erro.
         const simboloInserir = this.consumir(tiposDeSimbolos.INSERIR, 'Esperado palavra reservada "INSERIR".');
 
@@ -236,7 +230,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return new Inserir(-1, nomeDaTabela.lexema, colunas, valores);
     }
 
-    private logicaComumCondicoes(operacao: string): Condicao[] {
+    override logicaComumCondicoes(operacao: string): Condicao[] {
         const condicoes: Condicao[] = [];
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.ONDE)) {
             do {
@@ -272,7 +266,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return condicoes;
     }
 
-    private comandoSelecionar() {
+    override comandoSelecionar() {
         // Essa linha nunca deve retornar erro.
         this.consumir(tiposDeSimbolos.SELECIONAR, 'Esperado palavra reservada "SELECIONAR".');
 
@@ -301,7 +295,7 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         return new Selecionar(-1, nomeTabela.lexema, colunas, condicoes, tudo);
     }
 
-    private declaracao() {
+    override declaracao() {
         switch (this.simbolos[this.atual].tipo) {
             case tiposDeSimbolos.ATUALIZAR:
                 return this.comandoAtualizar();

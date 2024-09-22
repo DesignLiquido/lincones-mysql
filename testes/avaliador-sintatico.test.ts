@@ -1,5 +1,5 @@
 import { AvaliadorSintatico } from '../fontes/avaliador-sintatico';
-import { Lexador } from '../fontes/lexador';
+import { Lexador } from '../fontes/comum/fontes/lexador';
 
 describe('Avaliador Sintático', () => {
     let lexador: Lexador;
