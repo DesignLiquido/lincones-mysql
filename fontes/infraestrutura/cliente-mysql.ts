@@ -6,56 +6,62 @@ export class ClienteMySQL {
 
     constructor() {
         this.origemDados = {
-            host     : process.env.ENDERECO,
-            user     : process.env.USUARIO,
-            password : process.env.SENHA,
-            database : process.env.NOME_BASE_DADOS
-        }
+            host: process.env.ENDERECO,
+            user: process.env.USUARIO,
+            password: process.env.SENHA,
+            database: process.env.NOME_BASE_DADOS
+        };
     }
 
     public async abrir(): Promise<any> {
         return new Promise((resolve, reject) => {
             const conexao = mysql.createConnection(this.origemDados);
             conexao.connect((erro) => {
-                if(erro){
-                    return reject('Erro ao conectar no MySQL: ' + erro.stack);
+                if (erro) {
+                    return reject('Erro ao conectar no MySQL: ' + JSON.stringify(erro));
                 }
-                
+
                 this.instanciaBancoDeDados = conexao;
-                resolve('Conectado ao banco de dados MySQL.')
+                resolve('Conectado ao banco de dados MySQL.');
             });
-        })
+        });
     }
-  
+
     public async executarComando(comando: string): Promise<any> {
         if (comando.startsWith('SELECT')) {
             return this.executarComandoSelecao(comando);
         }
 
         return new Promise((resolve, reject) => {
-            this.instanciaBancoDeDados.execute(comando, (erro: Error, linhas: any[], campos: any[]) => {
-                if (erro) {
-                    reject(erro.message);
+            this.instanciaBancoDeDados.execute(
+                comando,
+                (erro: Error, linhas: any[], campos: any[]) => {
+                    if (erro) {
+                        reject(erro.message);
+                    }
+                    resolve({
+                        linhas,
+                        campos
+                    });
                 }
-                resolve ({
-                    linhas,
-                    campos
-                })
-            });
-        })
+            );
+        });
     }
 
     private executarComandoSelecao(comando: string): Promise<any> {
         return new Promise((resolve, reject) => {
-            this.instanciaBancoDeDados.query(comando, (erro: Error, linhas: any[], campos: any[]) => {
-                if (erro) {
-                    reject(erro.message);
+            this.instanciaBancoDeDados.query(
+                comando,
+                (erro: Error, linhas: any[], campos: any[]) => {
+                    if (erro) {
+                        reject(erro.message);
+                    }
+                    resolve({
+                        linhas,
+                        campos
+                    });
                 }
-                resolve ({
-                    linhas,
-                    campos
-                })
-            });
-        })
+            );
+        });
     }
 }
