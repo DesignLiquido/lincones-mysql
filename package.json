@@ -24,7 +24,7 @@
     },
     "homepage": "https://github.com/DesignLiquido/lincones-mysql#readme",
     "scripts": {
-        "empacotar": "rimraf ./dist && tsc && copyfiles -V ./bin/lincones-mysql ./bin/lincones-mysql.cmd ./dist && copyfiles -V ./README.md ./dist",
+        "empacotar": "rimraf ./dist && yarn tsc && yarn copyfiles -V ./bin/lincones-mysql ./bin/lincones-mysql.cmd ./dist && yarn copyfiles -V ./README.md ./dist",
         "formatacao-prettier": "prettier --config .prettierrc  *.ts --write",
         "publicar-npm": "npm publish ./dist --access public",
         "lint": "eslint . --ext .ts",
