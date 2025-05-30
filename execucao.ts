@@ -17,8 +17,8 @@ interfaceLeitura.on('line', (linha: string) => {
         if (resultado.linhasRetornadas.length > 0) {
             console.table(resultado.linhasRetornadas);
         }
-        
-        if(resultado.mensagemExecucao){
+
+        if (resultado.mensagemExecucao) {
             console.log(resultado.mensagemExecucao);
         }
 
