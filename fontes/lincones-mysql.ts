@@ -4,8 +4,9 @@ import { Lexador } from "./comum/fontes/lexador";
 import { ClienteMySQL } from "./infraestrutura/cliente-mysql";
 import { RetornoComando } from "./infraestrutura";
 
-import * as dotenv from 'dotenv'
-dotenv.config()
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 export class LinconesMySQL {
     lexador: Lexador;
@@ -20,7 +21,7 @@ export class LinconesMySQL {
         this.clienteMySQL = new ClienteMySQL();
     }
 
-    async executar(comando: string): Promise<RetornoComando> {
+    async executar(_: any, comando: string): Promise<RetornoComando> {
         const resultadoLexador = this.lexador.mapear([comando]);
         const resultadoAvaliacaoSintatica = this.avaliadorSintatico.analisar(resultadoLexador);
         const resultadoTraducao = this.tradutor.traduzir(resultadoAvaliacaoSintatica.comandos);

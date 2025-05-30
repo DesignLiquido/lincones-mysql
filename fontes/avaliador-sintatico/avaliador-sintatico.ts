@@ -1,53 +1,14 @@
-import { Condicao } from '../comum/fontes/construtos';
-import { Criar, Comando, Selecionar, Atualizar, Inserir, Excluir } from '../comum/fontes/comandos';
+import { Criar, Comando, Selecionar, Inserir, Excluir } from '../comum/fontes/comandos';
 import {
     RetornoAvaliadorSintatico,
     RetornoLexador
 } from '../comum/fontes/interfaces/retornos';
-import tiposDeSimbolos from '../comum/fontes/tipos-de-simbolos';
 import { AvaliadorSintaticoBase } from '../comum/fontes/avaliador-sintatico/avaliador-sintatico-base';
 import { Coluna } from '../comum/fontes/construtos/coluna';
 
+import tiposDeSimbolos from '../comum/fontes/tipos-de-simbolos';
+
 export class AvaliadorSintatico extends AvaliadorSintaticoBase {
-    override comandoAtualizar(): Atualizar {
-        // Essa linha nunca deve retornar erro.
-        this.consumir(tiposDeSimbolos.ATUALIZAR, 'Esperado palavra reservada "ATUALIZAR".');
-
-        const nomeDaTabela = this.consumir(tiposDeSimbolos.IDENTIFICADOR, 
-            'Esperado identificador de nome de tabela após palavra reservada "ATUALIZAR".');
-
-        this.consumir(tiposDeSimbolos.DEFINIR, 'Esperado palavra reservada "DEFINIR". após palavra reservada "ATUALIZAR".');
-
-        // Relação de colunas para atualização
-        const colunasAtualizacao = []
-        do {
-            const esquerda = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado nome de coluna ou literal em descrição de atualização.`);
-            this.consumir(tiposDeSimbolos.IGUAL, 'Esperado operador válido após identificador em descrição de atualização.');
-
-            if (![
-                tiposDeSimbolos.IDENTIFICADOR, 
-                tiposDeSimbolos.NUMERO, 
-                tiposDeSimbolos.TEXTO,
-                tiposDeSimbolos.VERDADEIRO,
-                tiposDeSimbolos.FALSO
-            ].includes(this.simbolos[this.atual].tipo)) {
-                throw this.erro(this.simbolos[this.atual], `Esperado operador válido após identificador em descrição de atualização.`);
-            }
-
-            const direita = this.simbolos[this.atual];
-            this.avancar();
-            colunasAtualizacao.push({
-                esquerda,
-                direita
-            });
-        } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
-        
-        // Condições
-        const condicoes = this.logicaComumCondicoes('seleção');
-
-        return new Atualizar(-1, nomeDaTabela.lexema, colunasAtualizacao, condicoes);
-    }
-
     override comandoCriacaoColuna(): Coluna {
         // Nome
         const nomeDaColuna = this.consumir(tiposDeSimbolos.IDENTIFICADOR, 
@@ -174,96 +135,6 @@ export class AvaliadorSintatico extends AvaliadorSintaticoBase {
         this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA);
 
         return new Excluir(-1, nomeDaTabela.lexema, condicoes);
-    }
-
-    override comandoInserir(): Inserir {
-        // Essa linha nunca deve retornar erro.
-        const simboloInserir = this.consumir(tiposDeSimbolos.INSERIR, 'Esperado palavra reservada "INSERIR".');
-
-        this.consumir(tiposDeSimbolos.EM, 'Esperado palavra reservada "EM" após palavra reservada "INSERIR".');
-
-        const nomeDaTabela = this.consumir(tiposDeSimbolos.IDENTIFICADOR, 
-            'Esperado identificador de nome de tabela após palavra reservada "EM" em declaração "INSERIR".');
-
-        // Colunas
-        this.consumir(tiposDeSimbolos.PARENTESE_ESQUERDO, 
-            'Esperado abertura de parênteses após identificador de nome de tabela em comando "INSERIR".');
-        const colunas = [];
-        do {
-            const nomeDaColuna = this.consumir(tiposDeSimbolos.IDENTIFICADOR, 
-                'Esperado identificador de nome de coluna após identificador de nome de tabela em comando "INSERIR".');
-            colunas.push(nomeDaColuna.lexema);
-        } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
-
-        this.consumir(tiposDeSimbolos.PARENTESE_DIREITO, 
-            'Esperado fechamento de parênteses após declaração de colunas em comando "INSERIR".');
-        this.consumir(tiposDeSimbolos.VALORES, 
-            'Esperado palavra reservada "VALORES" após primeiro fechamento de parênteses em comando "INSERIR".');
-        this.consumir(tiposDeSimbolos.PARENTESE_ESQUERDO, 
-            'Esperado abertura de parênteses após palavra reservada "VALORES" em comando "INSERIR".');
-
-        // Valores
-        const valores = [];
-        do {
-            if (![
-                tiposDeSimbolos.IDENTIFICADOR, 
-                tiposDeSimbolos.NUMERO, 
-                tiposDeSimbolos.TEXTO,
-                tiposDeSimbolos.VERDADEIRO,
-                tiposDeSimbolos.FALSO
-            ].includes(this.simbolos[this.atual].tipo)) {
-                throw this.erro(this.simbolos[this.atual], `Esperado valor válido para inserção em comando "INSERIR".`);
-            }
-
-            valores.push(this.simbolos[this.atual]);
-            this.avancar();
-        } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
-
-        this.consumir(tiposDeSimbolos.PARENTESE_DIREITO, 
-            'Esperado fechamento de parênteses após declaração de valores em comando "INSERIR".');
-
-        if (valores.length !== colunas.length) {
-            throw this.erro(simboloInserir, 
-                'Número de colunas não correspondente ao número de valores em comando "INSERIR".');
-        }
-
-        return new Inserir(-1, nomeDaTabela.lexema, colunas, valores);
-    }
-
-    override logicaComumCondicoes(operacao: string): Condicao[] {
-        const condicoes: Condicao[] = [];
-        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.ONDE)) {
-            do {
-                const esquerda = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado nome de coluna ou literal em condição de ${operacao}.`);
-                if (![
-                    tiposDeSimbolos.IGUAL, 
-                    tiposDeSimbolos.MAIOR, 
-                    tiposDeSimbolos.MAIOR_IGUAL, 
-                    tiposDeSimbolos.MENOR, 
-                    tiposDeSimbolos.MENOR_IGUAL
-                ].includes(this.simbolos[this.atual].tipo)) {
-                    throw this.erro(this.simbolos[this.atual], `Esperado operador válido após identificador em condição de ${operacao}.`);
-                }
-
-                const operador = this.simbolos[this.atual].tipo;
-                this.avancar();
-
-                if (![
-                    tiposDeSimbolos.IDENTIFICADOR, 
-                    tiposDeSimbolos.NUMERO, 
-                    tiposDeSimbolos.TEXTO
-                ].includes(this.simbolos[this.atual].tipo)) {
-                    throw this.erro(this.simbolos[this.atual], `Esperado operador válido após identificador em condição de ${operacao}.`);
-                }
-
-                const direita = this.simbolos[this.atual];
-                this.avancar();
-
-                condicoes.push(new Condicao(esquerda, operador, direita.literal || direita.lexema));
-            } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.E));
-        }
-
-        return condicoes;
     }
 
     override comandoSelecionar() {
