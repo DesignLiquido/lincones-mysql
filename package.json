@@ -1,7 +1,7 @@
 {
     "name": "@designliquido/lincones-mysql",
     "description": "Implementação de LinConEs para MySQL.",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "main": "index.js",
     "author": "Leonel Sanches da Silva",
     "contributors": [
