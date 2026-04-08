@@ -21,16 +21,21 @@ export class Tradutor extends TradutorSqlAnsi {
 
     traduzirColuna(coluna: Coluna) {
         let traduzir = '';
-        if (coluna.chavePrimaria) traduzir += 'PRIMARY KEY ';
+
         if (tiposDeSimbolos.INTEIRO === coluna.tipo) {
             traduzir += `INTEGER `;
         } else if (tiposDeSimbolos.TEXTO === coluna.tipo) {
-            const simbolo = coluna.tamanho as Simbolo;
-            traduzir += `VARCHAR(${simbolo.literal}) `;
+            const simbolo = coluna.tamanho as Simbolo | undefined;
+            const tamanho = Number(simbolo?.literal) || 255;
+            traduzir += `VARCHAR(${tamanho}) `;
         } else if (tiposDeSimbolos.LOGICO === coluna.tipo)
             traduzir += 'BOOLEAN ';
+
         if (coluna.nulo) traduzir += 'NULL';
         else traduzir += 'NOT NULL';
+
+        if (coluna.autoIncremento) traduzir += ' AUTO_INCREMENT';
+        if (coluna.chavePrimaria) traduzir += ' PRIMARY KEY';
 
         return traduzir;
     }
