@@ -8,6 +8,7 @@ import { RetornoComando } from "./infraestrutura";
 
 import { Comando, TecnologiaLinconesInterface } from "./comum/fontes";
 import { RetornoComandoInterface } from "./comum/fontes/interfaces/retorno-comando-interface";
+import { ConfiguracaoConexaoMySQL } from './interfaces';
 
 dotenv.config();
 
@@ -17,15 +18,14 @@ export class LinconesMySQL implements TecnologiaLinconesInterface {
     tradutor: Tradutor;
     clienteMySQL: ClienteMySQL;
 
-    constructor() {
+    constructor(configuracao?: ConfiguracaoConexaoMySQL) {
         this.lexador = new Lexador();
         this.avaliadorSintatico = new AvaliadorSintatico();
         this.tradutor = new Tradutor();
-        this.clienteMySQL = new ClienteMySQL();
+        this.clienteMySQL = new ClienteMySQL(configuracao);
     }
 
-    // TODO: Suportar `caminho`.
-    async iniciar(caminho: string): Promise<void> {
+    async iniciar(_caminho: string): Promise<void> {
         await this.clienteMySQL.abrir();
     }
 
@@ -45,7 +45,7 @@ export class LinconesMySQL implements TecnologiaLinconesInterface {
         return await this.executarInterno(resultadoAvaliacaoSintatica.comandos, parametrosNaoNulos);
     }
 
-    private async executarInterno(comandos: Comando[], parametros: any[]): Promise<RetornoComandoInterface[]> {
+    private async executarInterno(comandos: Comando[], _parametros: any[]): Promise<RetornoComandoInterface[]> {
         if (comandos.length <= 0) {
             return [];
         }

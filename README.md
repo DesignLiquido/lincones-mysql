@@ -16,7 +16,15 @@ npm install -g @designliquido/lincones-mysql
 
 ### Execução
 
-Para executar no modo console, adicione na raiz do seu projeto um arquivo `.env` com o seguinte:
+Para executar no modo console, adicione um arquivo `configuracao.delpross` na raiz do seu projeto com o seguinte conteúdo:
+
+```
+dados.caminho = "localhost:3306/meu_banco_de_dados"
+dados.usuario = "root"
+dados.senha = "minhasenha#123"
+```
+
+Ou ainda, adicione na raiz do seu projeto um arquivo `.env` com o seguinte:
 
 ```
 ENDERECO='localhost'
