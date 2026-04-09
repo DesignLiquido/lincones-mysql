@@ -81,4 +81,21 @@ export class ClienteMySQL {
             );
         });
     }
+
+    public async fechar(): Promise<void> {
+        if (!this.instanciaBancoDeDados) {
+            return;
+        }
+
+        await new Promise<void>((resolve, reject) => {
+            this.instanciaBancoDeDados?.end((erro) => {
+                if (erro) {
+                    reject(erro);
+                    return;
+                }
+
+                resolve();
+            });
+        });
+    }
 }

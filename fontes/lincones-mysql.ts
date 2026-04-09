@@ -29,6 +29,10 @@ export class LinconesMySQL implements TecnologiaLinconesInterface {
         await this.clienteMySQL.abrir();
     }
 
+    async encerrar(): Promise<void> {
+        await this.clienteMySQL.fechar();
+    }
+
     async executarComando(comando: Comando): Promise<RetornoComandoInterface[]> {
         return await this.executarInterno([comando], comando.parametros);
     }
